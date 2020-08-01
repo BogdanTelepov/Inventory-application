@@ -2,6 +2,7 @@ package com.example.bogdan.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -106,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             double price = data.getDoubleExtra(AddEditNoteActivity.EXTRA_PRICE, 1);
             byte[] image = data.getByteArrayExtra(AddEditNoteActivity.EXTRA_IMAGE);
 
-            Note note = new Note(image,title,description,price,quantity);
+            Note note = new Note(image, title, description, price, quantity);
             noteViewModel.insert(note);
             Toast.makeText(this, "Note Saved", Toast.LENGTH_SHORT)
                     .show();
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             double price = data.getDoubleExtra(AddEditNoteActivity.EXTRA_PRICE, 1);
             byte[] image = data.getByteArrayExtra(AddEditNoteActivity.EXTRA_IMAGE);
 
-            Note note = new Note(image,title,description,price,quantity);
+            Note note = new Note(image, title, description, price, quantity);
             note.setId(id);
             noteViewModel.update(note);
             Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT)
@@ -150,13 +152,29 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch ((item.getItemId())) {
             case R.id.delete_all_notes:
-                noteViewModel.deleteAllNotes();
-                Toast.makeText(this, "All notes deleted", Toast.LENGTH_SHORT)
-                        .show();
+                showAlertDialogButtonClicked();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    public void showAlertDialogButtonClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete all notes");
+        builder.setMessage("Would you like to delete all notes?");
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                noteViewModel.deleteAllNotes();
+                Toast.makeText(MainActivity.this, "All notes delete", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bogdan.R;
+import com.example.bogdan.data.NoteDatabase;
 import com.example.bogdan.model.Note;
 
 public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
@@ -85,6 +86,11 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
                 }
             });
         }
+
+//        public void deleteItem() {
+//            int position = getAdapterPosition();
+//            notifyItemRemoved(position);
+//        }
     }
 
     public interface OnItemClickListener {
@@ -94,4 +100,6 @@ public class NoteAdapter extends ListAdapter<Note, NoteAdapter.NoteHolder> {
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
+
+
 }
