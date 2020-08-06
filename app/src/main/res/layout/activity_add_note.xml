@@ -6,11 +6,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context=".activities.AddEditNoteActivity">
+    tools:context=".activities.EditActivity">
 
 
     <ImageView
         android:id="@+id/image_view_takePhoto"
+        android:src="@drawable/ic_launcher_background"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center_horizontal"

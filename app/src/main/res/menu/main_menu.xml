@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/delete_all_notes"
-        android:title="Delete all notes"
+        android:title="Delete all items"
         app:showAsAction="never" />
 </menu>
