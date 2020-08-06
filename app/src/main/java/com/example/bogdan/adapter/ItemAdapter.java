@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.bogdan.R;
 import com.example.bogdan.model.Item;
 
@@ -51,7 +52,9 @@ public class ItemAdapter extends ListAdapter<Item, ItemAdapter.NoteHolder> {
         holder.textView_description.setText(currentItem.getDescription());
         holder.textView_quantity.setText(String.valueOf(currentItem.getQuantity()));
         holder.textView_price.setText(String.valueOf(currentItem.getPrice()));
-
+        Glide.with(holder.imageView_productImage.getContext())
+                .load(currentItem.getImage())
+                .into(holder.imageView_productImage);
     }
 
     public Item getNoteAt(int position) {

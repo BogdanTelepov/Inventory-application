@@ -115,7 +115,6 @@ public class EditActivity extends AppCompatActivity {
         price = Double.parseDouble(editText_price.getText().toString());
         int quantity = numberPicker_quantity.getValue();
 
-
         Intent data = new Intent();
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);

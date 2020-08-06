@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.bogdan.model.Item;
 
-@Database(entities = {Item.class}, version = 1)
+@Database(entities = {Item.class}, version = 1, exportSchema = false)
 public abstract class ItemDatabase extends RoomDatabase {
 
     private static ItemDatabase instance;

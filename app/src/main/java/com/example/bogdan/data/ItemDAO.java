@@ -22,10 +22,10 @@ public interface ItemDAO {
     @Delete
     void delete(Item item);
 
-    @Query("DELETE FROM Item")
+    @Query("DELETE FROM note_table")
     void deleteAllNotes();
 
 
-    @Query("SELECT * FROM Item")
+    @Query("SELECT * FROM note_table")
     LiveData<List<Item>> getAllNotes();
 }
