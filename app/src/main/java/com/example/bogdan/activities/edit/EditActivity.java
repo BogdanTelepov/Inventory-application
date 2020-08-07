@@ -1,10 +1,11 @@
-package com.example.bogdan.activities;
+package com.example.bogdan.activities.edit;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,8 +20,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.bogdan.R;
+import com.example.bogdan.model.Item;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
@@ -33,9 +37,10 @@ public class EditActivity extends AppCompatActivity {
     public static final String EXTRA_IMAGE = "com.example.bogdan.EXTRA_IMAGE";
     public static final String EXTRA_ID = "com.example.bogdan.EXTRA_ID";
 
-
+    EditViewModel editViewModel;
     final int CAMERA_REQUEST = 51;
 
+    private Bitmap bitmap;
 
     private EditText editText_title;
     private EditText editText_description;
@@ -49,6 +54,9 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
 
+        editViewModel = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory
+                .getInstance(this.getApplication()))
+                .get(EditViewModel.class);
 
         editText_title = findViewById(R.id.edit_text_title);
         editText_description = findViewById(R.id.edit_text_description);
@@ -61,19 +69,24 @@ public class EditActivity extends AppCompatActivity {
         numberPicker_quantity.setMaxValue(100);
 
         Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
-        Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_ID)) {
-            setTitle("Edit Note");
 
-            editText_title.setText(intent.getStringExtra(EXTRA_TITLE));
-            editText_description.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
-            editText_price.setText(String.valueOf(intent.getDoubleExtra(EXTRA_PRICE, 1)));
-            numberPicker_quantity.setValue(intent.getIntExtra(EXTRA_QUANTITY, 1));
+        if (getIntent().hasExtra(EXTRA_ID)) {
+            int id = getIntent().getIntExtra(EXTRA_ID, -1);
+            editViewModel.getItem(id);
+            editViewModel.item.observe(this, new Observer<Item>() {
+                @Override
+                public void onChanged(Item item) {
+                    if (item == null) return;
+                    editText_title.setText(item.getTitle());
+                    editText_description.setText(item.getDescription());
 
-        } else {
-            setTitle("Add Note");
-
+                    Bitmap bmp = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
+                    imageView.setImageBitmap(bmp);
+                }
+            });
         }
+
+
     }
 
     @Override
@@ -101,40 +114,38 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void saveNote() {
-        String title = "";
-        String description = "";
-        double price = 0;
-        if (editText_title.getEditableText().toString().length() == 0 || editText_description.getEditableText().toString().length() == 0) {
-            Toast.makeText(this, "Please input all fields", Toast.LENGTH_SHORT)
-                    .show();
-            return;
-        }
-        if (editText_price.getEditableText().toString().length() == 0) {
-            Toast.makeText(this, "Please input price", Toast.LENGTH_SHORT)
-                    .show();
-            return;
-        }
-        title = editText_title.getText().toString();
-        description = editText_description.getText().toString();
-        price = Double.parseDouble(editText_price.getText().toString());
-        int quantity = numberPicker_quantity.getValue();
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                String title = "";
+                String description = "";
+                double price = 0;
+                if (editText_title.getEditableText().toString().length() == 0 || editText_description.getEditableText().toString().length() == 0) {
+                    Toast.makeText(EditActivity.this, "Please input all fields", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+                if (editText_price.getEditableText().toString().length() == 0) {
+                    Toast.makeText(EditActivity.this, "Please input price", Toast.LENGTH_SHORT)
+                            .show();
+                    return;
+                }
+                title = editText_title.getText().toString();
+                description = editText_description.getText().toString();
+                price = Double.parseDouble(editText_price.getText().toString());
+                int quantity = numberPicker_quantity.getValue();
 
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 
-        Intent data = new Intent();
-        data.putExtra(EXTRA_TITLE, title);
-        data.putExtra(EXTRA_DESCRIPTION, description);
-        data.putExtra(EXTRA_QUANTITY, quantity);
-        data.putExtra(EXTRA_PRICE, price);
+                byte[] imageInByte = stream.toByteArray();
 
-        int id = getIntent().getIntExtra(EXTRA_ID, -1);
-        if (id != -1) {
-            data.putExtra(EXTRA_ID, id);
-        }
+                editViewModel.save(imageInByte, title, description, price, quantity);
 
-        setResult(RESULT_OK, data);
-        finish();
-
-
+                finish();
+            }
+        });
     }
 
     public void takePhoto(View view) {
@@ -150,8 +161,8 @@ public class EditActivity extends AppCompatActivity {
 
         if (requestCode == CAMERA_REQUEST) {
             if (data != null) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                imageView.setImageBitmap(photo);
+                bitmap = (Bitmap) data.getExtras().get("data");
+                imageView.setImageBitmap(bitmap);
             }
         }
 

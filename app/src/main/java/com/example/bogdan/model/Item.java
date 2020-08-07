@@ -50,4 +50,24 @@ public class Item {
     public double getPrice() {
         return price;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 }

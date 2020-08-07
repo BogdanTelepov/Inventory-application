@@ -25,6 +25,8 @@ public interface ItemDAO {
     @Query("DELETE FROM note_table")
     void deleteAllNotes();
 
+    @Query("SELECT * FROM note_table WHERE id=:id")
+    LiveData<Item> getItem(int id);
 
     @Query("SELECT * FROM note_table")
     LiveData<List<Item>> getAllNotes();

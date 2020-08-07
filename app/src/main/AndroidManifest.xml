@@ -13,11 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.EditActivity"
-            android:parentActivityName=".activities.MainActivity" />
+            android:name=".activities.edit.EditActivity"
+            android:parentActivityName=".activities.main.MainActivity" />
 
 
-    <activity android:name=".activities.MainActivity"
+    <activity android:name=".activities.main.MainActivity"
         android:launchMode="singleTop">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />

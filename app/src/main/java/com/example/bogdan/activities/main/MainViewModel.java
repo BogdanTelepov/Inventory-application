@@ -1,4 +1,4 @@
-package com.example.bogdan.data;
+package com.example.bogdan.activities.main;
 
 import android.app.Application;
 
@@ -6,15 +6,16 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.bogdan.data.ItemRepository;
 import com.example.bogdan.model.Item;
 
 import java.util.List;
 
-public class ItemViewModel extends AndroidViewModel {
+public class MainViewModel extends AndroidViewModel {
     private ItemRepository repository;
     private LiveData<List<Item>> allNotes;
 
-    public ItemViewModel(@NonNull Application application) {
+    public MainViewModel(@NonNull Application application) {
         super(application);
         repository = new ItemRepository(application);
         allNotes = repository.getAllNotes();

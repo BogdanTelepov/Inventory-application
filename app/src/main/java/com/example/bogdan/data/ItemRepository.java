@@ -23,6 +23,10 @@ public class ItemRepository {
         new InsertNoteAsyncTask(itemDAO).execute(item);
     }
 
+    public LiveData<Item> getItem(int id){
+        return itemDAO.getItem(id);
+    }
+
     public void update(Item item) {
         new UpdateNoteAsyncTask(itemDAO).execute(item);
     }
