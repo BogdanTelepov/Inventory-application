@@ -1,7 +1,9 @@
 package com.example.bogdan.activities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -15,10 +17,12 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.bogdan.R;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 public class EditActivity extends AppCompatActivity {
@@ -88,7 +92,7 @@ public class EditActivity extends AppCompatActivity {
                 saveNote();
                 return true;
             case R.id.delete_note:
-
+                showAlertDialogButtonClicked();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -114,6 +118,7 @@ public class EditActivity extends AppCompatActivity {
         description = editText_description.getText().toString();
         price = Double.parseDouble(editText_price.getText().toString());
         int quantity = numberPicker_quantity.getValue();
+
 
         Intent data = new Intent();
         data.putExtra(EXTRA_TITLE, title);
@@ -150,5 +155,24 @@ public class EditActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+
+    public void showAlertDialogButtonClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete item");
+        builder.setMessage("Would you like to delete item?");
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Toast.makeText(EditActivity.this, "Item delete", Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

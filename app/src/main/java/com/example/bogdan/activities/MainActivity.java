@@ -2,11 +2,14 @@ package com.example.bogdan.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             int quantity = data.getIntExtra(EditActivity.EXTRA_QUANTITY, 1);
             double price = data.getDoubleExtra(EditActivity.EXTRA_PRICE, 1);
             byte[] image = data.getByteArrayExtra(EditActivity.EXTRA_IMAGE);
+
 
             Item item = new Item(image, title, description, price, quantity);
             item.setId(id);
