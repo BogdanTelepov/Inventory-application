@@ -28,8 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int ADD_NOTE_REQUEST = 1;
-    public static final int EDIT_NOTE_REQUEST = 2;
+
     private MainViewModel mainViewModel;
 
     @Override
@@ -38,12 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FloatingActionButton buttonAddNote = findViewById(R.id.button_add_note);
-        buttonAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
-                startActivity(intent);
-            }
+        buttonAddNote.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            startActivity(intent);
         });
 
 
@@ -59,14 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 .get(MainViewModel.class);
 
 
-        mainViewModel.getAllNotes().observe(this, new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-                adapter.submitList(items);
-
-
-            }
-        });
+        mainViewModel.getAllNotes().observe(this, adapter::submitList);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -82,63 +71,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }).attachToRecyclerView(recyclerView);
 
-        adapter.setOnItemClickListener(new ItemAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Item item) {
-                Intent intent = new Intent(MainActivity.this, EditActivity.class);
+        adapter.setOnItemClickListener(item -> {
+            Intent intent = new Intent(MainActivity.this, EditActivity.class);
 
-                intent.putExtra(EditActivity.EXTRA_ID, item.getId());
-                startActivity(intent);
-            }
+            intent.putExtra(EditActivity.EXTRA_ID, item.getId());
+            startActivity(intent);
         });
 
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == ADD_NOTE_REQUEST && resultCode == RESULT_OK) {
-//            assert data != null;
-//            String title = data.getStringExtra(EditActivity.EXTRA_TITLE);
-//            String description = data.getStringExtra(EditActivity.EXTRA_DESCRIPTION);
-//            int quantity = data.getIntExtra(EditActivity.EXTRA_QUANTITY, 1);
-//            double price = data.getDoubleExtra(EditActivity.EXTRA_PRICE, 1);
-//            byte[] image = data.getByteArrayExtra(EditActivity.EXTRA_IMAGE);
-//
-//            Item item = new Item(image, title, description, price, quantity);
-//            mainViewModel.insert(item);
-//            Toast.makeText(this, "Note Saved", Toast.LENGTH_SHORT)
-//                    .show();
-//        } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == RESULT_OK) {
-//            assert data != null;
-//            int id = data.getIntExtra(EditActivity.EXTRA_ID, -1);
-//            if (id == -1) {
-//                Toast.makeText(this, "Note can't be updated", Toast.LENGTH_SHORT)
-//                        .show();
-//            }
-//
-//            String title = data.getStringExtra(EditActivity.EXTRA_TITLE);
-//            String description = data.getStringExtra(EditActivity.EXTRA_DESCRIPTION);
-//            int quantity = data.getIntExtra(EditActivity.EXTRA_QUANTITY, 1);
-//            double price = data.getDoubleExtra(EditActivity.EXTRA_PRICE, 1);
-//            byte[] image = data.getByteArrayExtra(EditActivity.EXTRA_IMAGE);
-//
-//
-//            Item item = new Item(image, title, description, price, quantity);
-//            item.setId(id);
-//            mainViewModel.update(item);
-//            Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT)
-//                    .show();
-//
-//
-//        } else {
-//            Toast.makeText(this, "Note not saved", Toast.LENGTH_SHORT)
-//                    .show();
-//        }
-//
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -163,13 +104,10 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete all notes");
         builder.setMessage("Would you like to delete all notes?");
-        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mainViewModel.deleteAllNotes();
-                Toast.makeText(MainActivity.this, "All notes delete", Toast.LENGTH_SHORT)
-                        .show();
-            }
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            mainViewModel.deleteAllNotes();
+            Toast.makeText(MainActivity.this, "All notes delete", Toast.LENGTH_SHORT)
+                    .show();
         });
 
         builder.setNegativeButton("Cancel", null);

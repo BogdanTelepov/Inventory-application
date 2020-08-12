@@ -30,11 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 public class EditActivity extends AppCompatActivity {
-    public static final String EXTRA_TITLE = "com.example.bogdan.EXTRA_TITLE";
-    public static final String EXTRA_DESCRIPTION = "com.example.bogdan.EXTRA_DESCRIPTION";
-    public static final String EXTRA_QUANTITY = "com.example.bogdan.EXTRA_QUANTITY";
-    public static final String EXTRA_PRICE = "com.example.bogdan.EXTRA_PRICE";
-    public static final String EXTRA_IMAGE = "com.example.bogdan.EXTRA_IMAGE";
+
     public static final String EXTRA_ID = "com.example.bogdan.EXTRA_ID";
 
     EditViewModel editViewModel;
@@ -73,16 +69,13 @@ public class EditActivity extends AppCompatActivity {
         if (getIntent().hasExtra(EXTRA_ID)) {
             int id = getIntent().getIntExtra(EXTRA_ID, -1);
             editViewModel.getItem(id);
-            editViewModel.item.observe(this, new Observer<Item>() {
-                @Override
-                public void onChanged(Item item) {
-                    if (item == null) return;
-                    editText_title.setText(item.getTitle());
-                    editText_description.setText(item.getDescription());
+            editViewModel.item.observe(this, item -> {
+                if (item == null) return;
+                editText_title.setText(item.getTitle());
+                editText_description.setText(item.getDescription());
 
-                    Bitmap bmp = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
-                    imageView.setImageBitmap(bmp);
-                }
+                Bitmap bmp = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
+                imageView.setImageBitmap(bmp);
             });
         }
 
@@ -115,36 +108,33 @@ public class EditActivity extends AppCompatActivity {
 
     private void saveNote() {
         Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                String title = "";
-                String description = "";
-                double price = 0;
-                if (editText_title.getEditableText().toString().length() == 0 || editText_description.getEditableText().toString().length() == 0) {
-                    Toast.makeText(EditActivity.this, "Please input all fields", Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                }
-                if (editText_price.getEditableText().toString().length() == 0) {
-                    Toast.makeText(EditActivity.this, "Please input price", Toast.LENGTH_SHORT)
-                            .show();
-                    return;
-                }
-                title = editText_title.getText().toString();
-                description = editText_description.getText().toString();
-                price = Double.parseDouble(editText_price.getText().toString());
-                int quantity = numberPicker_quantity.getValue();
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-
-                byte[] imageInByte = stream.toByteArray();
-
-                editViewModel.save(imageInByte, title, description, price, quantity);
-
-                finish();
+        handler.post(() -> {
+            String title = "";
+            String description = "";
+            double price = 0;
+            if (editText_title.getEditableText().toString().length() == 0 || editText_description.getEditableText().toString().length() == 0) {
+                Toast.makeText(EditActivity.this, "Please input all fields", Toast.LENGTH_SHORT)
+                        .show();
+                return;
             }
+            if (editText_price.getEditableText().toString().length() == 0) {
+                Toast.makeText(EditActivity.this, "Please input price", Toast.LENGTH_SHORT)
+                        .show();
+                return;
+            }
+            title = editText_title.getText().toString();
+            description = editText_description.getText().toString();
+            price = Double.parseDouble(editText_price.getText().toString());
+            int quantity = numberPicker_quantity.getValue();
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+            byte[] imageInByte = stream.toByteArray();
+
+            editViewModel.save(imageInByte, title, description, price, quantity);
+
+            finish();
         });
     }
 
