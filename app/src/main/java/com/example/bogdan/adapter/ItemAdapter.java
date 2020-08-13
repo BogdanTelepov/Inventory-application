@@ -79,13 +79,10 @@ public class ItemAdapter extends ListAdapter<Item, ItemAdapter.NoteHolder> {
             imageView_productImage = itemView.findViewById(R.id.image_view_product);
 
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(getItem(position));
-                    }
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(getItem(position));
                 }
             });
         }
