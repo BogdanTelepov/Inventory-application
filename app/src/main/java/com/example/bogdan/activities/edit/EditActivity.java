@@ -163,14 +163,8 @@ public class EditActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete item");
         builder.setMessage("Would you like to delete item?");
-        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                Toast.makeText(EditActivity.this, "Item delete", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+        builder.setPositiveButton("Delete", (dialog, which) -> Toast.makeText(EditActivity.this, "Item delete", Toast.LENGTH_SHORT)
+                .show());
 
         builder.setNegativeButton("Cancel", null);
         AlertDialog dialog = builder.create();
